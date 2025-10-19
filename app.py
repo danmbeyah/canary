@@ -8,8 +8,7 @@ app = Flask(__name__)
 
 # --- Kafka Producer Configuration ---
 # This configuration assumes Kafka is running on localhost:9092.
-# The value_serializer lambda function serializes dictionary data to a 
-JSON formatted byte string.
+# The value_serializer lambda function serializes dictionary data to a JSON formatted byte string.
 try:
     producer = KafkaProducer(
         bootstrap_servers=['localhost:9092'],
@@ -29,32 +28,26 @@ def publish_iot_data():
 topic.
     """
     if not producer:
-        return jsonify({"status": "error", "message": "Kafka producer not 
-available"}), 503
+        return jsonify({"status": "error", "message": "Kafka producer not available"}), 503
 
     # Get the JSON data from the request body
     try:
         iot_data = request.get_json()
         if not iot_data:
-            return jsonify({"status": "error", "message": "No data 
-provided in request"}), 400
+            return jsonify({"status": "error", "message": "No data provided in request"}), 400
     except Exception:
-        return jsonify({"status": "error", "message": "Invalid JSON 
-format"}), 400
+        return jsonify({"status": "error", "message": "Invalid JSON format"}), 400
 
     # Define the Kafka topic to publish to
     kafka_topic = 'iot-device-data'
 
     try:
         # Send the data to the Kafka topic
-        # The .get(timeout=10) call blocks until the message is sent or 
-times out
+        # The .get(timeout=10) call blocks until the message is sent or times out
         future = producer.send(kafka_topic, value=iot_data)
         record_metadata = future.get(timeout=10)
 
-        print(f"Message sent successfully to topic 
-'{record_metadata.topic}' partition {record_metadata.partition} at offset 
-{record_metadata.offset}")
+        print(f"Message sent successfully to topic '{record_metadata.topic}' partition {record_metadata.partition} at offset {record_metadata.offset}")
 
         # Return a success response
         # 202 Accepted is a good status code for asynchronous processing
@@ -66,12 +59,10 @@ times out
     except KafkaError as e:
         # Handle potential Kafka errors (e.g., broker not available)
         print(f"Error sending message to Kafka: {e}")
-        return jsonify({"status": "error", "message": "Failed to send data 
-to Kafka"}), 500
+        return jsonify({"status": "error", "message": "Failed to send data to Kafka"}), 500 
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-        return jsonify({"status": "error", "message": "An unexpected error 
-occurred"}), 500
+        return jsonify({"status": "error", "message": "An unexpected error occurred"}), 500
 
 
 # --- Main Execution ---
