@@ -1,10 +1,22 @@
 # canary
 A scalable, event-driven data streaming solution to monitor air quality, leveraging Kafka as streaming platform for real-time data pipelines, Arduino microcontroller and sensors for data collection in a pub-sub architecture.
 
+
+Run docker in the background:
+
+docker compose up -d
+
+Install requirements:
+
 pip install -r requirements.txt
 
 
+Run publisher with endpoint to receive data and publish topic:
+
 python app.py
+
+
+Run consumer to read from Kafka:
 
 python consumer.py
 
